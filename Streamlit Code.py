@@ -382,7 +382,7 @@ def main_app():
 
         if rp is None:
             msg = ""
-            bg_color = "#FFFFFF"
+            bg_color = "#0E0E0E"
             
         else:
             pipe_final = joblib.load("final_heart_model.pkl")
@@ -394,6 +394,7 @@ def main_app():
             if pred == 1:
                 msg = "High<br><br><br><br><br>Risk"
                 bg_color = "#B02626"
+
             else:
                 msg = "Low<br><br><br><br><br>Risk"
                 bg_color = "#0d751b"
@@ -413,7 +414,7 @@ def main_app():
                 justify-content: center;
                 font-size: 30px;
                 font-weight: bold;
-                color: "#06092b";
+                color: "#FFFFFF";
                 text-align: center;
             ">
             {msg}
