@@ -1,11 +1,4 @@
 import streamlit as st
-import base64
-def encode_img(path: str) -> str:
-    with open(path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-logo_base64 = encode_img("logo.png")
-
 def main_app():
     import streamlit as st
     import pandas as pd
@@ -14,41 +7,12 @@ def main_app():
     from scipy.interpolate import make_interp_spline
     import joblib
 
+
+
     file_id = "1MMG-VyOMRrMRMcelEAnm9GCseOcgRsgD"
     url = f"https://drive.google.com/uc?export=download&id={file_id}"
     df = pd.read_csv(url)
-    
-    st.set_page_config(layout="wide")
 
-    # Logo top left
-    st.markdown(
-        f"""
-        <style>
-        #fixed-logo {{
-            position: fixed;
-            top: 22px;
-            left: 22px;
-            z-index: 9999;
-            background-color: transparent !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }}
-
-        #fixed-logo img {{
-            height: 48px;
-            width: auto;
-            background: transparent !important;
-            box-shadow: none !important;
-        }}
-        </style>
-
-        <div id="fixed-logo">
-            <img src="data:image/png;base64,{logo_base64}">
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    # ---------- END FIXED LOGO ----------
 
     if "random_person" not in st.session_state:
         st.session_state["random_person"] = None
