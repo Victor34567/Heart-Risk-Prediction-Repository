@@ -402,6 +402,7 @@ def main_app():
         st.markdown(
             f"""
             <div style="
+                margin-top: -20px;
                 background-color: {bg_color};
                 padding: 20px;
                 border-radius: 12px;
@@ -410,7 +411,7 @@ def main_app():
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 50px;
+                font-size: 30px;
                 font-weight: bold;
                 color: "#06092b";
                 text-align: center;
@@ -744,3 +745,4 @@ if not st.session_state["started"]:
 
 else:
     main_app()
+
