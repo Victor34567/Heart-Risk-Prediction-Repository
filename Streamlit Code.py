@@ -209,8 +209,8 @@ def main_app():
                 )
 
                 # --- Einschränkungen ---
-                deaf = st.selectbox("Deaf or Hard of Hearing", ["Yes", "No"])
-                blind = st.selectbox("Blind or Vision Difficulty", ["Yes", "No"])
+                deaf = st.selectbox("Hearing Difficulties", ["Yes", "No"])
+                blind = st.selectbox("Blind or Vision Deficiency", ["Yes", "No"])
                 diff_conc = st.selectbox("Difficulty Concentrating", ["Yes", "No"])
                 diff_walk = st.selectbox("Difficulty Walking", ["Yes", "No"])
                 diff_dress = st.selectbox("Difficulty Dressing/Bathing", ["Yes", "No"])
@@ -237,7 +237,7 @@ def main_app():
                     ]
                 )
 
-                chest_scan = st.selectbox("Chest Scan", ["Yes", "No"])
+                chest_scan = st.selectbox("Had Chest Scan", ["Yes", "No"])
 
                 race = st.selectbox(
                     "Race/Ethnicity Category",
