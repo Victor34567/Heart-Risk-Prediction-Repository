@@ -5,7 +5,14 @@ def main_app():
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.interpolate import make_interp_spline
-    import joblib  
+    import joblib
+    import base64
+
+    def encode_img(path):
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+
+    logo_base64 = encode_img("logo.png")
 
 
 
@@ -635,8 +642,29 @@ import streamlit as st
 import os
 st.set_page_config(layout="wide")
 
-import streamlit as st
+st.markdown(f"""
+<style>
 
+/* --- FIXED LOGO IN TOP LEFT CORNER --- */
+#fixed-logo {{
+    position: fixed;
+    top: 22px;          /* distance from top */
+    left: 22px;         /* distance from left */
+    z-index: 9999;      /* stay above everything */
+}}
+
+#fixed-logo img {{
+    height: 48px;       /* adjust logo size */
+    width: auto;
+}}
+
+</style>
+
+<div id="fixed-logo">
+    <img src="data:image/png;base64,{logo_base64}">
+</div>
+
+""", unsafe_allow_html=True)
 if "started" not in st.session_state:
     st.session_state["started"] = False
 
