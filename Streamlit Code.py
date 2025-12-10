@@ -382,7 +382,7 @@ def main_app():
 
         if rp is None:
             msg = ""
-            bg_color = "#111115"
+            bg_color = "#FFFFFF"
             
         else:
             pipe_final = joblib.load("final_heart_model.pkl")
