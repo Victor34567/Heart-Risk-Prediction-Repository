@@ -7,7 +7,8 @@ scikit-learn==1.6.1
 imbalanced-learn==0.13.0
 joblib
 openai
-xgboost==1.7.6
+xgboost
+
 
 
 
