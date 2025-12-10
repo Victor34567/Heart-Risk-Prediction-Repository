@@ -660,7 +660,7 @@ if not st.session_state["started"]:
             letter-spacing: 0.4px;
             font-weight: 700;
         ">
-            ❤️ HeartAware
+            HeartAware
         </h1>
 
         <!-- H2 (weiter unten + untergeordnet zu HeartAware) -->
