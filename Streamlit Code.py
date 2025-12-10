@@ -5,14 +5,7 @@ def main_app():
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.interpolate import make_interp_spline
-    import joblib
-    import base64
-
-    def encode_img(path):
-        with open(path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-
-    logo_base64 = encode_img("logo.png")
+    import joblib  
 
 
 
@@ -639,32 +632,52 @@ def main_app():
     pass       
         
 import streamlit as st
-import os
+import base64
+
 st.set_page_config(layout="wide")
 
-st.markdown(f"""
-<style>
+# 1) Helper function and variable – MUST be above any use
+def encode_img(path: str) -> str:
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
 
-/* --- FIXED LOGO IN TOP LEFT CORNER --- */
-#fixed-logo {{
-    position: fixed;
-    top: 22px;          /* distance from top */
-    left: 22px;         /* distance from left */
-    z-index: 9999;      /* stay above everything */
-}}
+# Make sure the file name & path are correct
+logo_base64 = encode_img("logo.png")   # e.g. in same folder as this .py file
 
-#fixed-logo img {{
-    height: 48px;       /* adjust logo size */
-    width: auto;
-}}
+# 2) Fixed logo in top-left corner
+st.markdown(
+    f"""
+    <style>
+    #fixed-logo {{
+        position: fixed;
+        top: 22px;
+        left: 22px;
+        z-index: 9999;
+        background-color: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }}
 
-</style>
+    #fixed-logo img {{
+        height: 48px;
+        width: auto;
+        background: transparent !important;
+        box-shadow: none !important;
+    }}
+    </style>
 
-<div id="fixed-logo">
-    <img src="data:image/png;base64,{logo_base64}">
-</div>
+    <div id="fixed-logo">
+        <img src="data:image/png;base64,{logo_base64}">
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-""", unsafe_allow_html=True)
+# 3) Rest of your app below
+st.title("HeartAware App")
+
+import streamlit as st
+
 if "started" not in st.session_state:
     st.session_state["started"] = False
 
