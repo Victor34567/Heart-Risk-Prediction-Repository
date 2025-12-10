@@ -394,10 +394,13 @@ def main_app():
             if pred == 1:
                 msg = "High<br><br><br><br><br>Risk"
                 bg_color = "#B02626"
+                text_color = "#FFFFFF"
 
             else:
                 msg = "Low<br><br><br><br><br>Risk"
                 bg_color = "#0d751b"
+                text_color = "#FFFFFF"
+
                 # "#040E2BFF"
                 
         st.markdown(
@@ -414,7 +417,7 @@ def main_app():
                 justify-content: center;
                 font-size: 30px;
                 font-weight: bold;
-                color: "#FFFFFF";
+                color: {text_color};
                 text-align: center;
             ">
             {msg}
