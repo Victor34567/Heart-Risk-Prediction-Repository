@@ -632,49 +632,8 @@ def main_app():
     pass       
         
 import streamlit as st
-import base64
-
+import os
 st.set_page_config(layout="wide")
-
-# 1) Helper function and variable – MUST be above any use
-def encode_img(path: str) -> str:
-    with open(path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-# Make sure the file name & path are correct
-logo_base64 = encode_img("logo.png")   # e.g. in same folder as this .py file
-
-# 2) Fixed logo in top-left corner
-st.markdown(
-    f"""
-    <style>
-    #fixed-logo {{
-        position: fixed;
-        top: 22px;
-        left: 22px;
-        z-index: 9999;
-        background-color: transparent !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }}
-
-    #fixed-logo img {{
-        height: 48px;
-        width: auto;
-        background: transparent !important;
-        box-shadow: none !important;
-    }}
-    </style>
-
-    <div id="fixed-logo">
-        <img src="data:image/png;base64,{logo_base64}">
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-# 3) Rest of your app below
-st.title("HeartAware App")
 
 import streamlit as st
 
