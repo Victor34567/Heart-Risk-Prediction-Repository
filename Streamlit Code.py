@@ -402,7 +402,7 @@ def main_app():
                 text_color = "#FFFFFF"
 
                 # "#040E2BFF"
-                
+        text_color = "#FFFFFF"
         st.markdown(
             f"""
             <div style="
