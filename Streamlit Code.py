@@ -392,7 +392,7 @@ def main_app():
             pred = pipe_final.predict(rp_model)[0]
 
             if pred == 1:
-                msg = "High<br><br><br><br><br>Risk"
+                msg = "High<br><br><br><br>Risk"
                 bg_color = "#B02626"
                 text_color = "#FFFFFF"
 
