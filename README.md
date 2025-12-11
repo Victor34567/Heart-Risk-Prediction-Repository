@@ -1,2 +1,4 @@
-# Heart-Risk-Prediction-Repository
-New 09.12
+In this zip file the Jupyter Notebook contains the core workflow of the Heart Attack Risk Prediction project. It allows users to load the dataset (via Google Drive), follow the full model development pipeline, and run all functions used in the final application, including prediction, visualization, and feature analysis. The Dataset (.csv) is also included as an excel file. 
+The model was optimized using Optuna; since optimization takes around two hours, the best hyperparameters are already stored in the code, so rerunning this step is optional. The trained model is saved and loaded via joblib to ensure reproducibility and to make it accessible for deployment. 
+All notebook functions work independently except for the AI-based advice module, which requires a personal OpenAI API key, as the key of the group cannot be shared for security reasons. The final model/ The advice answers can also be tested interactively in the Streamlit web app available at:
+https://heart-risk-prediction-repository-7sgjabp7nnkgaimfcxyyfg.streamlit.app/
