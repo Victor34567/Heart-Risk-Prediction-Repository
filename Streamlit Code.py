@@ -445,7 +445,11 @@ def main_app():
             ax = plt.gca()
             ax.set_yticks([])
             ax.set_yticklabels([])     
-            plt.xticks(x, ['Age', 'Health', 'Physical Health Days', 'Smoking Habits', 'BMI', 'Physical Activities', 'Sleep', 'Alcohol Consumption', 'Last Checkup'], rotation=30, ha="right")
+            plt.xticks(x, ['General Health', 'Age', 'Physical Health Days', 
+                           'Last Checkup', 'Physcial Activities', 'Sleep Duration', 
+                           'Smoking Habits', 'E-Cigarette Use', 'Alcohol Consumption', 
+                           'BMI'], 
+                           rotation=30, ha="right")
             plt.title("You vs. Average")
             plt.legend()
             plt.grid(alpha=0.3)
