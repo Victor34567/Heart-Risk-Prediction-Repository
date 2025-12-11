@@ -264,14 +264,6 @@ def main_app():
                     "AlcoholDrinkers": alcohol
                 }])
 
-                # Dtypes an df anpassen (wie bei der Edit-Tabelle)
-                for col in manual_person.columns:
-                    orig_dtype = df[col].dtype
-                    if pd.api.types.is_numeric_dtype(orig_dtype):
-                        manual_person[col] = pd.to_numeric(manual_person[col], errors="coerce")
-                    else:
-                        manual_person[col] = manual_person[col].astype(orig_dtype)
-
                 st.session_state["random_person"] = manual_person.copy()
                 st.session_state["edited"] = False
                 st.session_state["edit_mode"] = False
