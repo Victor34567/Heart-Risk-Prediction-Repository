@@ -1,14 +1,20 @@
 import streamlit as st
 def main_app():
+    # necessary imports
     import streamlit as st
     import pandas as pd
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.interpolate import make_interp_spline
     import joblib
+    from scipy.interpolate import PchipInterpolator
+    from openai import OpenAI
+    import os
 
 
 
+
+    # load dataframe (limited to features used for prediction)
     file_id = "1MMG-VyOMRrMRMcelEAnm9GCseOcgRsgD"
     url = f"https://drive.google.com/uc?export=download&id={file_id}"
     data = pd.read_csv(url)
@@ -48,19 +54,15 @@ def main_app():
         )
 
         # Mode 1: Choose a random person from the dataset
-            # Mode 1: Choose a random person from the dataset
         if mode == "Try Random Person":
             if st.button("Choose random person", use_container_width=True):
                 rp = df.sample(1)
-                # State & HadHeartAttack direkt nach dem Ziehen entfernen (falls vorhanden)
-                if "HadHeartAttack" in rp.columns:
-                    rp = rp.drop(columns=[col])
-
                 st.session_state["random_person"] = rp
                 st.session_state["edited"] = False
                 st.session_state["edit_mode"] = False
                 st.success("🟢 Person chosen")
 
+            # rename key features (more userfriendly)
             rename_map = {
                 "GeneralHealth": "General Health",
                 "PhysicalHealthDays": "Physical Health (Days)",
@@ -86,13 +88,8 @@ def main_app():
             if st.session_state["random_person"] is not None:
                 st.subheader("Health Data")
 
-                # Original-DF NICHT verändern
                 temp_rp = st.session_state["random_person"]
-
-                # Tabelle wie bisher (echte Spaltennamen)
                 base_table = temp_rp.T
-
-                # Kopie für Anzeige mit schönen Labels
                 display_table = base_table.copy()
                 display_table.index = display_table.index.to_series().replace(rename_map)
 
@@ -268,6 +265,12 @@ def main_app():
                 }])
 
                 # Dtypes an df anpassen (wie bei der Edit-Tabelle)
+                for col in manual_person.columns:
+                    orig_dtype = df[col].dtype
+                    if pd.api.types.is_numeric_dtype(orig_dtype):
+                        manual_person[col] = pd.to_numeric(manual_person[col], errors="coerce")
+                    else:
+                        manual_person[col] = manual_person[col].astype(orig_dtype)
 
                 st.session_state["random_person"] = manual_person.copy()
                 st.session_state["edited"] = False
@@ -417,7 +420,6 @@ def main_app():
             avg_scaled = (avg_vals - df_min) / (df_max - df_min)
             rp_scaled = (rp_vals - df_min) / (df_max - df_min)
 
-            from scipy.interpolate import PchipInterpolator
 
             
             # Smooth x-axis
@@ -462,7 +464,6 @@ def main_app():
             
             
             # --------- AI Advice unter dem Plot ---------
-            from openai import OpenAI
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
             # Prediction für den Text (nochmal, unabhängig von der Box rechts)
@@ -532,11 +533,9 @@ def main_app():
             st.write(advice_text)   
     pass       
         
-import streamlit as st
-import os
+
 st.set_page_config(layout="wide")
 
-import streamlit as st
 
 if "started" not in st.session_state:
     st.session_state["started"] = False
