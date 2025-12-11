@@ -267,8 +267,6 @@ def main_app():
                     "AlcoholDrinkers": alcohol
                 }])
 
-                import pandas as pd  # steht bei dir eh schon oben
-
                 # Dtypes an df anpassen (wie bei der Edit-Tabelle)
                 for col in manual_person.columns:
                     orig_dtype = df[col].dtype
@@ -293,14 +291,12 @@ def main_app():
 
         if rp is None:
             msg = ""
-            bg_color = "#0E0E0E"
+            bg_color = "#888686"
             
         else:
             pipe_final = joblib.load("final_heart_model.pkl")
-            drop_cols = [c for c in ["HadHeartAttack", "State"] if c in rp.columns]
-            rp_model = rp.drop(columns=drop_cols)
 
-            pred = pipe_final.predict(rp_model)[0]
+            pred = pipe_final.predict(rp)[0]
 
             if pred == 1:
                 msg = "High<br><br><br><br>Risk"
@@ -658,6 +654,5 @@ if not st.session_state["started"]:
         st.session_state["started"] = True
         st.rerun()
 
-else:
-    main_app()
+
 
