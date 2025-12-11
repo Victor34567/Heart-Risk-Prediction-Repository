@@ -653,6 +653,7 @@ if not st.session_state["started"]:
     if start:
         st.session_state["started"] = True
         st.rerun()
-
+else:
+    main_app()
 
 
