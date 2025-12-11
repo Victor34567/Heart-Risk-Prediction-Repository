@@ -11,8 +11,27 @@ def main_app():
 
     file_id = "1MMG-VyOMRrMRMcelEAnm9GCseOcgRsgD"
     url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    df = pd.read_csv(url)
-
+    data = pd.read_csv(url)
+    feature_columns = [
+        "AgeCategory",
+        "ChestScan",
+        "HadAngina",
+        "GeneralHealth",
+        "PhysicalHealthDays",
+        "SmokerStatus",
+        "ECigaretteUsage",
+        "HadDiabetes",
+        "BMI",
+        "PhysicalActivities",
+        "DifficultyWalking",
+        "HadCOPD",
+        "HadStroke",
+        "SleepHours",
+        "HadDepressiveDisorder",
+        "AlcoholDrinkers",
+        "LastCheckupTime"
+    ]
+    df = data[feature_columns]
 
     if "random_person" not in st.session_state:
         st.session_state["random_person"] = None
@@ -34,54 +53,32 @@ def main_app():
             if st.button("Choose random person", use_container_width=True):
                 rp = df.sample(1)
                 # State & HadHeartAttack direkt nach dem Ziehen entfernen (falls vorhanden)
-                for col in ["State", "HadHeartAttack"]:
-                    if col in rp.columns:
-                        rp = rp.drop(columns=[col])
+                if "HadHeartAttack" in rp.columns:
+                    rp = rp.drop(columns=[col])
+
                 st.session_state["random_person"] = rp
                 st.session_state["edited"] = False
                 st.session_state["edit_mode"] = False
                 st.success("🟢 Person chosen")
 
             rename_map = {
-                "Sex": "Gender",
                 "GeneralHealth": "General Health",
                 "PhysicalHealthDays": "Physical Health (Days)",
-                "MentalHealthDays": "Mental Health (Days)",
                 "LastCheckupTime": "Last Check-up",
                 "PhysicalActivities": "Physically Active",
                 "SleepHours": "Sleep (Hours)",
-                "RemovedTeeth": "Teeth Removed",
-                "HadHeartAttack": "Heart Attack (History)",
-                "HadAngina": "Angina (History)",
                 "HadStroke": "Stroke (History)",
-                "HadAsthma": "Asthma",
-                "HadSkinCancer": "Skin Cancer",
+                "HadAngina": "Angina (History)",
                 "HadCOPD": "COPD",
-                "HadDepressiveDisorder": "Depressive Disorder",
-                "HadKidneyDisease": "Kidney Disease",
-                "HadArthritis": "Arthritis",
+                "HadDepressiveDisorder": "Depressive Disorder (History)",
                 "HadDiabetes": "Diabetes Status",
-                "DeafOrHardOfHearing": "Hearing Difficulty",
-                "BlindOrVisionDifficulty": "Vision Difficulty",
-                "DifficultyConcentrating": "Difficulty Concentration",
                 "DifficultyWalking": "Difficulty Walking",
-                "DifficultyDressingBathing": "Difficulty Dressing/Bathing",
-                "DifficultyErrands": "Difficulty with Errands",
                 "SmokerStatus": "Smoking Status",
                 "ECigaretteUsage": "E-Cigarette Use",
                 "ChestScan": "Chest Scan",
                 "AlcoholDrinkers": "Alcohol Consumption",
-                "RaceEthnicityCategory": "Race / Ethnicity",
                 "AgeCategory": "Age",
-                "HeightInMeters": "Height (m)",
-                "WeightInKilograms": "Weight (kg)",
                 "BMI": "BMI",
-                "HIVTesting": "HIV Test",
-                "FluVaxLast12": "Flu Vaccine (12 Months)",
-                "PneumoVaxEver": "PneumoVax Ever",
-                "TetanusLast10Tdap": "Tetanus/Tdap (10 Years)",
-                "HighRiskLastYear": "High Risk (Last Year)",
-                "CovidPos": "Covid Positive"
             }
             
             
@@ -145,7 +142,6 @@ def main_app():
                 # --- Basisdaten ---
                 # state = st.text_input("State (optional, can stay empty)", value="")
 
-                sex = st.selectbox("Sex", ["Female", "Male"])
 
                 general_health = st.selectbox(
                     "General Health",
@@ -157,10 +153,6 @@ def main_app():
                     min_value=0, max_value=30, step=1, value=0
                 )
 
-                mental_health_days = st.number_input(
-                    "Mental Health Days (0–30 days with poor mental health, last 30 days)",
-                    min_value=0, max_value=30, step=1, value=0
-                )
 
                 last_checkup = st.selectbox(
                     "Last Checkup Time",
@@ -182,24 +174,13 @@ def main_app():
                     min_value=0.0, max_value=24.0, step=0.5, value=7.0
                 )
 
-                removed_teeth = st.selectbox(
-                    "Removed Teeth",
-                    ["None of them", "1 to 5", "6 or more, but not all", "All"]
-                )
-
                 # --- Krankheiten ---
-                had_heart_attack = st.selectbox("Had Heart Attack", ["Yes", "No"])
-                had_angina = st.selectbox("Had Angina", ["Yes", "No"])
-                had_stroke = st.selectbox("Had Stroke", ["Yes", "No"])
-                had_asthma = st.selectbox("Had Asthma", ["Yes", "No"])
-                had_skin_cancer = st.selectbox("Had Skin Cancer", ["Yes", "No"])
-                had_copd = st.selectbox("Had COPD", ["Yes", "No"])
-                had_depression = st.selectbox("Had Depressive Disorder", ["Yes", "No"])
-                had_kidney = st.selectbox("Had Kidney Disease", ["Yes", "No"])
-                had_arthritis = st.selectbox("Had Arthritis", ["Yes", "No"])
-
+                had_angina = st.selectbox("Angina (History)", ["Yes", "No"])
+                had_stroke = st.selectbox("Stroke (History)", ["Yes", "No"])
+                had_copd = st.selectbox("COPD", ["Yes", "No"])
+                had_depression = st.selectbox("Depressive Disorder (History)", ["Yes", "No"])
                 had_diabetes = st.selectbox(
-                    "Had Diabetes",
+                    "Diabetes Status",
                     [
                         "Yes",
                         "Yes, but only during pregnancy (female)",
@@ -209,12 +190,8 @@ def main_app():
                 )
 
                 # --- Einschränkungen ---
-                deaf = st.selectbox("Hearing Difficulties", ["Yes", "No"])
-                blind = st.selectbox("Blind or Vision Deficiency", ["Yes", "No"])
-                diff_conc = st.selectbox("Difficulty Concentrating", ["Yes", "No"])
                 diff_walk = st.selectbox("Difficulty Walking", ["Yes", "No"])
                 diff_dress = st.selectbox("Difficulty Dressing/Bathing", ["Yes", "No"])
-                diff_errands = st.selectbox("Difficulty with Errands", ["Yes", "No"])
 
                 # --- Lifestyle / Risikofaktoren ---
                 smoker_status = st.selectbox(
@@ -239,17 +216,6 @@ def main_app():
 
                 chest_scan = st.selectbox("Had Chest Scan", ["Yes", "No"])
 
-                race = st.selectbox(
-                    "Race/Ethnicity Category",
-                    [
-                        "White only, Non-Hispanic",
-                        "Black only, Non-Hispanic",
-                        "Other race only, Non-Hispanic",
-                        "Multiracial, Non-Hispanic",
-                        "Hispanic"
-                    ]
-                )
-
                 age_category = st.selectbox(
                     "Age Category",
                     [
@@ -269,91 +235,36 @@ def main_app():
                     ]
                 )
 
-                height_m = st.number_input(
-                    "Height in meters (e.g. 1.70)",
-                    min_value=1.0, max_value=2.5, step=0.01, value=1.70
-                )
-
-                weight_kg = st.number_input(
-                    "Weight in kilograms (e.g. 75.0)",
-                    min_value=30.0, max_value=250.0, step=0.5, value=75.0
-                )
-
                 bmi = st.number_input(
                     "BMI (e.g. 25.0)",
                     min_value=10.0, max_value=60.0, step=0.1, value=25.0
                 )
 
                 alcohol = st.selectbox("Alcohol Drinkers", ["Yes", "No"])
-                hiv = st.selectbox("HIV Testing", ["Yes", "No"])
-                flu_vax = st.selectbox("Flu Vaccine last 12 months", ["Yes", "No"])
-                pneumo_vax = st.selectbox("PneumoVax ever", ["Yes", "No"])
-
-                tetanus = st.selectbox(
-                    "Tetanus last 10 years / Tdap",
-                    [
-                        "Yes, received Tdap",
-                        "Yes, received tetanus shot but not sure what type",
-                        "Yes, received tetanus shot, but not Tdap",
-                        "No, did not receive any tetanus shot in the past 10 years"
-                    ]
-                )
-
-                high_risk = st.selectbox("High Risk last year", ["Yes", "No"])
-
-                covid_pos = st.selectbox(
-                    "Covid Positive",
-                    [
-                        "Yes",
-                        "No",
-                        "Tested positive using home test without a health professional"
-                    ]
-                )
-
+               
                 submitted = st.form_submit_button("Risk Check")
 
             if submitted:
                 manual_person = pd.DataFrame([{
                     #"State": state,
-                    "Sex": sex,
                     "GeneralHealth": general_health,
                     "PhysicalHealthDays": physical_health_days,
-                    "MentalHealthDays": mental_health_days,
                     "LastCheckupTime": last_checkup,
                     "PhysicalActivities": physical_activities,
                     "SleepHours": sleep_hours,
-                    "RemovedTeeth": removed_teeth,
-                    "HadHeartAttack": had_heart_attack,
                     "HadAngina": had_angina,
                     "HadStroke": had_stroke,
-                    "HadAsthma": had_asthma,
-                    "HadSkinCancer": had_skin_cancer,
                     "HadCOPD": had_copd,
                     "HadDepressiveDisorder": had_depression,
-                    "HadKidneyDisease": had_kidney,
-                    "HadArthritis": had_arthritis,
                     "HadDiabetes": had_diabetes,
-                    "DeafOrHardOfHearing": deaf,
-                    "BlindOrVisionDifficulty": blind,
-                    "DifficultyConcentrating": diff_conc,
                     "DifficultyWalking": diff_walk,
                     "DifficultyDressingBathing": diff_dress,
-                    "DifficultyErrands": diff_errands,
                     "SmokerStatus": smoker_status,
                     "ECigaretteUsage": ecig_usage,
                     "ChestScan": chest_scan,
-                    "RaceEthnicityCategory": race,
                     "AgeCategory": age_category,
-                    "HeightInMeters": height_m,
-                    "WeightInKilograms": weight_kg,
                     "BMI": bmi,
-                    "AlcoholDrinkers": alcohol,
-                    "HIVTesting": hiv,
-                    "FluVaxLast12": flu_vax,
-                    "PneumoVaxEver": pneumo_vax,
-                    "TetanusLast10Tdap": tetanus,
-                    "HighRiskLastYear": high_risk,
-                    "CovidPos": covid_pos
+                    "AlcoholDrinkers": alcohol
                 }])
 
                 import pandas as pd  # steht bei dir eh schon oben
