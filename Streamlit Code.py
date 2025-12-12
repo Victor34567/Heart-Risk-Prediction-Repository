@@ -100,20 +100,20 @@ def main_app():
                 )
 
                 if st.button("Apply changes", use_container_width=True):
-                    # Werte aus Editor holen
+                    # values from editor
                     new_vals = edited_table.iloc[:, 0].copy()
 
-                    # schöne Labels -> Original-Spaltennamen
+                    # New column names
                     inverse_map = {v: k for k, v in rename_map.items()}
                     new_vals.index = new_vals.index.to_series().replace(inverse_map)
 
-                    # Werte zurückschreiben, aber im ORIGINAL-Datentyp
+                    # revert new column names
                     row_idx = st.session_state["random_person"].index[0]
                     for col in st.session_state["random_person"].columns:
                         orig_dtype = st.session_state["random_person"][col].dtype
                         val = new_vals[col]
 
-                        # wenn Spalte ursprünglich numerisch war → wieder in Zahl casten
+                        # redo column in numerical
                         if pd.api.types.is_numeric_dtype(orig_dtype):
                             val = pd.to_numeric(val, errors="coerce")
 
@@ -136,10 +136,7 @@ def main_app():
         
 
             with st.form("manual_input_form"):
-                # --- Basisdaten ---
                 # state = st.text_input("State (optional, can stay empty)", value="")
-
-
                 general_health = st.selectbox(
                     "General Health",
                     ["Excellent", "Very good", "Good", "Fair", "Poor"]
@@ -171,7 +168,6 @@ def main_app():
                     min_value=0.0, max_value=24.0, step=0.5, value=7.0
                 )
 
-                # --- Krankheiten ---
                 had_angina = st.selectbox("Angina (History)", ["Yes", "No"])
                 had_stroke = st.selectbox("Stroke (History)", ["Yes", "No"])
                 had_copd = st.selectbox("COPD", ["Yes", "No"])
@@ -186,11 +182,9 @@ def main_app():
                     ]
                 )
 
-                # --- Einschränkungen ---
                 diff_walk = st.selectbox("Difficulty Walking", ["Yes", "No"])
                 diff_dress = st.selectbox("Difficulty Dressing/Bathing", ["Yes", "No"])
 
-                # --- Lifestyle / Risikofaktoren ---
                 smoker_status = st.selectbox(
                     "Smoker Status",
                     [
@@ -243,7 +237,6 @@ def main_app():
 
             if submitted:
                 manual_person = pd.DataFrame([{
-                    #"State": state,
                     "GeneralHealth": general_health,
                     "PhysicalHealthDays": physical_health_days,
                     "LastCheckupTime": last_checkup,
@@ -273,15 +266,15 @@ def main_app():
 
 
     with right:
-
+        # Risk check section
         st.header("Risk Check")
 
         rp = st.session_state["random_person"]
-
         if rp is None:
             msg = ""
             bg_color = "#888686"
-            
+
+        # Load saved model for prediction
         else:
             pipe_final = joblib.load("final_heart_model.pkl")
 
@@ -297,7 +290,6 @@ def main_app():
                 bg_color = "#0d751b"
                 text_color = "#FFFFFF"
 
-                # "#040E2BFF"
         text_color = "#FFFFFF"
         st.markdown(
             f"""
@@ -324,9 +316,11 @@ def main_app():
         
 
     with middle:
+        # Graph section
         st.header("Strengths and Weaknesses")
         random_person = st.session_state["random_person"]
 
+        # Check if person chosen
         if random_person is None:
             st.info("Select or create a person")
         else:
@@ -430,7 +424,7 @@ def main_app():
             plt.plot(x_smooth, rp_smooth, label="Your values", color="#0098df")
             plt.plot(x_smooth, avg_smooth, label="Average", color="#fb4a4a")
 
-            # saubere Segmentgrenzen ohne Lücke
+            # bounds for difference coloring
             bounds = np.concatenate(([x[0] - 0.5],
                             (x[:-1] + x[1:]) / 2,
                             [x[-1] + 0.5]))
@@ -459,10 +453,10 @@ def main_app():
             
             
             
-            # --------- AI Advice unter dem Plot ---------
+            # AI Advice
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-            # Prediction für den Text (nochmal, unabhängig von der Box rechts)
+            # Prediction variables to foreward to gpt
             pipe_final = joblib.load("final_heart_model.pkl")
             drop_cols = [c for c in ["HadHeartAttack", "State"] if c in random_person.columns]
             random_person_df = random_person.drop(columns=drop_cols)
@@ -529,10 +523,9 @@ def main_app():
             st.write(advice_text)   
     pass       
         
-
 st.set_page_config(layout="wide")
 
-
+# Start screen
 if "started" not in st.session_state:
     st.session_state["started"] = False
 
@@ -620,7 +613,7 @@ if not st.session_state["started"]:
 
     st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
 
-    # Button global größer stylen
+    # Button 
     st.markdown("""
     <style>
     .big-start-btn button {
@@ -633,6 +626,7 @@ if not st.session_state["started"]:
     </style>
     """, unsafe_allow_html=True)
 
+    # Start button - start sesion & prediction
     col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
         st.markdown('<div class="big-start-btn">', unsafe_allow_html=True)
@@ -644,5 +638,6 @@ if not st.session_state["started"]:
         st.rerun()
 else:
     main_app()
+
 
 
